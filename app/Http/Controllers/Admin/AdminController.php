@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Lk;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
-class ProfileController extends Controller
+class AdminController extends Controller
 {
-    public function profile()
+    public function home()
     {
         return response()->json([
             'success' => true,

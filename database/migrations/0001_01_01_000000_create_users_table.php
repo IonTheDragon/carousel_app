@@ -15,15 +15,28 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('phone')->unique();
+            $table->string('password');
             $table->string('verification_code')->nullable();
             $table->timestamp('verification_expires_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
 
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('phone')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });        
+
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->integer('users_id');
+            $table->foreign('users_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
+            $table->index('users_id');            
             $table->timestamps();
         });                
 

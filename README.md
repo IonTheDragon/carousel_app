@@ -1,59 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## API авторизации
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### `login` - авторизация
 
-## About Laravel
+- **Запрос:** `POST /api/lk/auth/login`
+- **Описание:** Авторизует пользователя и возвращает токен.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+#### Входные параметры
+- `phone` (string) - Обязательно, телефон пользователя
+- `password` (string) - Обязательно, минимум 8 символов, пароль пользователя
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### Выходные параметры
+- `access_token` (string): Токен пользователя
+- `token_type` (string): bearer
+- `expires_in` (int): когда истекает
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Пример успешного запроса
 
-## Learning Laravel
+**Ответ:**
+```json
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
+    "token_type": "bearer",
+    "expires_in": 3600
+}
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### `register` - регистрация
 
-## Laravel Sponsors
+- **Запрос:** `POST /api/lk/auth/register`
+- **Описание:** Регистрирует нового пользователя и возвращает токен.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Входные параметры
+- `phone` (string) - Обязательно, телефон пользователя
+- `password` (string) - Обязательно, минимум 8 символов, пароль пользователя
 
-### Premium Partners
+#### Выходные параметры
+- `access_token` (string): Токен пользователя
+- `token_type` (string): bearer
+- `expires_in` (int): когда истекает
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### Пример успешного запроса
 
-## Contributing
+**Ответ:**
+```json
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
+    "token_type": "bearer",
+    "expires_in": 3600
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+### `logout` - выход
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Запрос:** `POST /api/lk/auth/logout`
+- **Описание:** Разавторизуется и делает токен невалидным.
 
-## Security Vulnerabilities
+#### Входные параметры
+- `token` (string) - Токен пользователя
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Выходные параметры
+- `status` (string): Статус выполения команды
 
-## License
+#### Пример успешного запроса
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Ответ:**
+```json
+{
+    "status": "Success"
+}
+```
+
+
+### `refresh` - обновление токена
+
+- **Запрос:** `POST /api/lk/auth/refresh`
+- **Описание:** Обновляет токен и возвращает его.
+
+#### Входные параметры
+- `token` (string) - Токен пользователя
+
+#### Выходные параметры
+- `access_token` (string): Токен пользователя
+- `token_type` (string): bearer
+- `expires_in` (int): когда истекает
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
+    "token_type": "bearer",
+    "expires_in": 3600
+}
+```
+
+
+### `send_code` - сгенерировать код авторизации
+
+- **Запрос:** `POST /api/lk/auth/send_code`
+- **Описание:** Генерирует код авторизации и посылает его пользователю.
+
+#### Входные параметры
+- `token` (string) - Токен пользователя
+
+#### Выходные параметры
+- `success` (bool): True.
+- `message` (string): Verification code sent
+- `expires_in` (int): 900
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "success": 1,
+    "message": "Verification code sent",
+    "expires_in": 900
+}
+```
+
+### `accept_code` - ввод кода
+
+- **Запрос:** `POST /api/lk/auth/accept_code`
+- **Описание:** Ввод и принятие кода авторизации
+
+#### Входные параметры
+- `token` (string) - Токен пользователя
+- `code` (string) - Обязательно, код авторизации 
+
+#### Выходные параметры
+- `status` (string): Статус выполения команды
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "Success"
+}
+```
