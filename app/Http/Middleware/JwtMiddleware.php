@@ -18,10 +18,6 @@ class JwtMiddleware extends BaseMiddleware
             $token = JWTAuth::parseToken();
 
             $user = $token->authenticate();
-
-            if (!$user->phone_verified_at) {
-                return response()->json(['error' => 'Not verified']);
-            }
             
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {

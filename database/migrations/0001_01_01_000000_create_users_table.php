@@ -23,22 +23,40 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        /*
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('phone')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
-        });        
+        });
+        */ 
 
-        Schema::create('admins', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->integer('users_id');
-            $table->foreign('users_id')
+            $table->string('title');
+            $table->string('slug');
+            $table->timestamps();
+        });               
+
+        Schema::create('role_vs_user', function (Blueprint $table) {
+            $table->id();
+
+            $table->integer('user_id');
+            $table->foreign('user_id')
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
-            $table->index('users_id');            
+            $table->index('user_id');
+
+            $table->integer('role_id');
+            $table->foreign('role_id')
+                  ->references('id')
+                  ->on('roles')
+                  ->onDelete('cascade');
+            $table->index('role_id');            
+
             $table->timestamps();
-        });                
+        });                        
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -58,5 +76,7 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('role_vs_user');
     }
 };

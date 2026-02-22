@@ -13,11 +13,11 @@ Route::prefix('lk')->name('lk.')->middleware(['json'])->group(function () {
 	    Route::post('refresh', 'App\Http\Controllers\Lk\Auth\AuthController@refresh');
 	});
 
-	Route::middleware(['jwt.verify'])->group(function () {
+	Route::middleware(['jwt.verify', 'phone.verify'])->group(function () {
 	    Route::post('profile', 'App\Http\Controllers\Lk\ProfileController@profile');
 	});
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['jwt.verify', 'json', 'is_admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['jwt.verify', 'phone.verify', 'is_admin', 'json'])->group(function () {
 	Route::post('home', 'App\Http\Controllers\Admin\AdminController@home');
 });

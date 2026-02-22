@@ -6,7 +6,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Admin\Admin;
+use App\Models\Lk\Role;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -69,16 +69,18 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function admin()
+    public function roles()
     {
-        return $this->hasOne(Admin::class, 'users_id');
+        return $this->belongsToMany(Role::class, 'role_vs_user');
     }
 
-    /**
-     * Check if user is an admin.
-     */
+    public function hasRole($slug)
+    {
+        return $this->roles()->where('slug', $slug)->exists();
+    }
+    
     public function isAdmin()
     {
-        return $this->admin !== null;
+        return $this->hasRole('admin');
     }        
 }
