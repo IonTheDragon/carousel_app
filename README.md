@@ -142,3 +142,92 @@
     "status": "Success"
 }
 ```
+
+
+### `get_vk_client_id` - получить Client ID VK
+
+- **Запрос:** `POST /api/lk/auth/get_vk_client_id`
+- **Описание:** Получаем Client ID VK из настроек приложения
+
+#### Входные параметры
+
+#### Выходные параметры
+- `status` (string): Статус выполения команды
+- `client_id` (string): Client ID VK
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "Success",
+    "client_id": "1234567890"
+}
+```
+
+
+### `get_vk_code_challenge` - получить code_challenge VK
+
+- **Запрос:** `POST /api/lk/auth/get_vk_code_challenge`
+- **Описание:** Получаем code_challenge VK
+
+#### Входные параметры
+
+#### Выходные параметры
+- `status` (string): Статус выполения команды
+- `code_challenge` (string): code_challenge VK
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "Success",
+    "code_challenge": "1234567890"
+}
+```
+
+
+### `save_phone` - Сохранить номер телефона
+
+- **Запрос:** `POST /api/lk/auth/save_phone`
+- **Описание:** Сохраняет номер телефона пользователя
+
+#### Входные параметры
+- `token` (string) - Токен пользователя
+- `phone` (string) - Обязательно - телефон пользователя
+
+#### Выходные параметры
+- `status` (string): Статус выполения команды
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "Success"
+}
+```
+
+
+### `save_userdata` - Сохранить email и имя пользователя
+
+- **Запрос:** `POST /api/lk/auth/save_userdata`
+- **Описание:** Сохраняет email и имя пользователя
+
+#### Входные параметры
+- `token` (string) - Токен пользователя
+- `email` (string) - email пользователя
+- `name` (string) - Имя пользователя
+
+#### Выходные параметры
+- `status` (string): Статус выполения команды
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "Success"
+}
+```

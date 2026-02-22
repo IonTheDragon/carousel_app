@@ -11,6 +11,10 @@ Route::prefix('lk')->name('lk.')->middleware(['json'])->group(function () {
 	    Route::post('register', 'App\Http\Controllers\Lk\Auth\AuthController@register');
 	    Route::post('logout', 'App\Http\Controllers\Lk\Auth\AuthController@logout');
 	    Route::post('refresh', 'App\Http\Controllers\Lk\Auth\AuthController@refresh');
+	    Route::post('get_vk_client_id', 'App\Http\Controllers\Lk\Auth\AuthController@get_vk_client_id');
+	    Route::post('get_vk_code_challenge', 'App\Http\Controllers\Lk\Auth\AuthController@get_vk_code_challenge');
+	    Route::post('save_phone', 'App\Http\Controllers\Lk\Auth\AuthController@savePhone');
+	    Route::post('save_userdata', 'App\Http\Controllers\Lk\Auth\AuthController@saveUserdata');
 	});
 
 	Route::middleware(['jwt.verify', 'phone.verify'])->group(function () {
