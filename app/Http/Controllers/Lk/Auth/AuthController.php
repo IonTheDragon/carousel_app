@@ -235,20 +235,50 @@ class AuthController extends Controller
             return view('lk.home', ['error' => 'Ошибка получения данных пользователя']);
         }
 
-        $user = new User;
-        $user->email = $json['user']['email'];
-        $user->name = $json['user']['last_name'] . ' ' . $json['user']['first_name'];        
-        $user->save();
+        $vk_id = $json['user']['user_id'];
 
-        $token = JWTAuth::fromUser($user);
+        $user = User::where('vk_id', $vk_id)->first();
 
-        if (empty($json['user']['phone'])) {
-            return view('lk.home', ['status' => 'need_phone', 'token' => $token]);
+        if (empty($user)) {
+            $user = new User;
+            $user->vk_id = $vk_id;
         }
 
-        $user->phone = $json['user']['phone'];
+        $user->email = $json['user']['email'];
+        $user->name = $json['user']['last_name'] . ' ' . $json['user']['first_name'];        
 
-        $user->save();
+        if (empty($user->phone)) {
+
+            if (empty($json['user']['phone'])) {
+
+                $user->save();
+
+                $token = JWTAuth::fromUser($user);
+
+                return view('lk.home', ['status' => 'need_phone', 'token' => $token]);
+            }
+
+            $exist_user = User::where('phone', $json['user']['phone'])->first();
+
+            if (!empty($exist_user)) {
+
+                $exist_user->vk_id = $vk_id;
+                $exist_user->email = $json['user']['email'];
+                $exist_user->name = $json['user']['last_name'] . ' ' . $json['user']['first_name'];
+                $exist_user->save(); 
+
+                $token = JWTAuth::fromUser($exist_user);
+
+            } else {
+                $user->phone = $json['user']['phone'];
+                $user->save();
+                $token = JWTAuth::fromUser($user);
+            }
+
+        } else {
+            $user->save(); 
+            $token = JWTAuth::fromUser($user);           
+        }
 
         return view('lk.home', ['status' => 'success', 'token' => $token]);                             
     }
