@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('verification_expires_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('vk_id')->nullable();
+            $table->string('ya_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

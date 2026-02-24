@@ -166,6 +166,28 @@
 ```
 
 
+### `get_ya_client_id` - получить Client ID Yandex
+
+- **Запрос:** `POST /api/lk/auth/get_ya_client_id`
+- **Описание:** Получаем Client ID Yandex из настроек приложения
+
+#### Входные параметры
+
+#### Выходные параметры
+- `status` (string): Статус выполения команды
+- `client_id` (string): Client ID Yandex
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "Success",
+    "client_id": "1234567890"
+}
+```
+
+
 ### `get_vk_code_challenge` - получить code_challenge VK
 
 - **Запрос:** `POST /api/lk/auth/get_vk_code_challenge`

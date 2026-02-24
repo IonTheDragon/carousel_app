@@ -45,8 +45,10 @@ class DatabaseSeeder extends Seeder
         $role_vs_user->save(); 
 
         $data = [
-            ['title'=>'VK ID клиента', 'slug'=>'vk_client_id', 'value' => ''],
+            ['title'=>'VK ID приложения', 'slug'=>'vk_client_id', 'value' => ''],
             ['title'=>'VK Строка состояния', 'slug'=>'vk_state', 'value' => $this->generateRandomString(32)],
+            ['title'=>'Yandex ID приложения', 'slug'=>'ya_client_id', 'value' => ''],
+            ['title'=>'Yandex Secret приложения', 'slug'=>'ya_client_secret', 'value' => ''],
         ];
 
         Option::insert($data);                       

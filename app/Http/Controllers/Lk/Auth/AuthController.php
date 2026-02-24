@@ -182,7 +182,13 @@ class AuthController extends Controller
         $code_challenge = str_replace(['+', '/', '='], ['-', '_', ''], $base64Encoded);
 
         return response()->json(['status' => 'Success', 'code_challenge' => $code_challenge]);
-    }    
+    }
+
+    public function get_ya_client_id(Request $request) {
+        $client_id = Option::where('slug', 'ya_client_id')->first()->value;
+
+        return response()->json(['status' => 'Success', 'client_id' => $client_id]);
+    }        
 
     public function vkAuth(Request $request) {
         $vk_state = Option::where('slug', 'vk_state')->first()->value;
@@ -282,6 +288,105 @@ class AuthController extends Controller
 
         return view('lk.home', ['status' => 'success', 'token' => $token]);                             
     }
+
+    public function yandexAuth(Request $request) {
+        $client_id = Option::where('slug', 'ya_client_id')->first()->value;
+        $client_secret = Option::where('slug', 'ya_client_secret')->first()->value;
+
+        $url = 'https://oauth.yandex.ru/token';
+        $param = [
+            'grant_type' => 'authorization_code',
+            'code' => $request->input('code'),
+        ];
+
+        $header_auth = [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . base64_encode($client_id . ':' . $client_secret),
+        ];        
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header_auth);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($param));
+
+        $out = curl_exec($curl);
+        $json = json_decode($out, true);
+
+        if (empty($json) || empty($json['access_token'])) {
+            return view('lk.home', ['error' => 'Ошибка авторизации']);
+        }
+
+        $url = 'https://login.yandex.ru/info';
+
+         $header_auth = [
+            'Authorization: OAuth ' . $json['access_token'],
+        ];       
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POST, false);
+
+        $out = curl_exec($curl);
+        $json = json_decode($out, true);
+
+        if (empty($json) || empty($json['id'])) {
+            return view('lk.home', ['error' => 'Ошибка получения данных пользователя']);
+        }
+
+        $ya_id = $json['id'];
+
+        $user = User::where('ya_id', $ya_id)->first();
+
+        if (empty($user)) {
+            $user = new User;
+            $user->ya_id = $ya_id;
+        }
+
+        $user->email = $json['default_email'];
+        $user->name = $json['last_name'] . ' ' . $json['first_name'];        
+
+        if (empty($user->phone)) {
+
+            if (empty($json['default_phone']['number'])) {
+
+                $user->save();
+
+                $token = JWTAuth::fromUser($user);
+
+                return view('lk.home', ['status' => 'need_phone', 'token' => $token]);
+            }
+
+            $exist_user = User::where('phone', $json['default_phone']['number'])->first();
+
+            if (!empty($exist_user)) {
+
+                $exist_user->vk_id = $vk_id;
+                $exist_user->email = $json['default_email'];
+                $exist_user->name = $json['last_name'] . ' ' . $json['first_name'];
+                $exist_user->save(); 
+
+                $token = JWTAuth::fromUser($exist_user);
+
+            } else {
+                $user->phone = $json['default_phone']['number'];
+                $user->save();
+                $token = JWTAuth::fromUser($user);
+            }
+
+        } else {
+            $user->save(); 
+            $token = JWTAuth::fromUser($user);           
+        }
+
+        return view('lk.home', ['status' => 'success', 'token' => $token]);                             
+    }    
 
     public function savePhone(Request $request)
     {
