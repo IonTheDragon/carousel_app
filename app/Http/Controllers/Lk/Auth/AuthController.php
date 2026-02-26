@@ -15,22 +15,15 @@ class AuthController extends Controller
 
     public function sendCode(Request $request)
     {
-        try {
-            $user = JWTAuth::parseToken()->authenticate();
+        $request->validate([
+            'phone' => 'required|string'
+        ]);
 
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
+        $user = User::where('phone', $request->phone)->first();
 
-        } catch (Exception $e) {
-            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return response()->json(['error' => 'Token is Invalid'], 401);
-            } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return response()->json(['error' => 'Token is Expired'], 401);
-            } else {
-                return response()->json(['error' => 'Authorization Token not found'], 401);
-            }
-        }        
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }                
         
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
@@ -50,13 +43,14 @@ class AuthController extends Controller
     public function acceptCode(Request $request)
     {
         $request->validate([
-            'code' => 'required|string'
+            'code' => 'required|string',
+            'phone' => 'required|string'
         ]);
 
-        $user = JWTAuth::parseToken()->authenticate();
+        $user = User::where('phone', $request->phone)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'User not found'], 404);
         }
 
         if ($user->verification_code != $request->code || $user->verification_expires_at <= now()) {
@@ -68,7 +62,9 @@ class AuthController extends Controller
         $user->phone_verified_at = now();
         $user->save(); 
 
-        return response()->json(['status' => 'Success']);
+        $token = JWTAuth::fromUser($user);       
+
+        return $this->respondWithToken($token);
     }           
 
     /**
@@ -79,17 +75,17 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'phone' => 'required|string',
+            'login' => 'required|string',
             'password' => 'required|string|min:8'
         ]);
 
-        $user = User::where('phone', $request->phone)->first();        
+        $user = User::where('login', $request->login)->first();        
 
         if (!$user) {
             return response()->json(['error' => 'Not found'], 404);
         }
 
-        $credentials = request(['phone', 'password']);
+        $credentials = request(['login', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -101,18 +97,18 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'phone' => 'required|string',
+            'login' => 'required|string',
             'password' => 'required|string|min:8'
         ]);
 
-        $user = User::where('phone', $request->phone)->first();        
+        $user = User::where('login', $request->login)->first();        
 
         if ($user) {
             return response()->json(['error' => 'User already exists']);
         }
 
         $user = new User;
-        $user->phone = $request->phone;
+        $user->login = $request->login;
         $user->password = Hash::make($request->password);
 
         $user->save();
@@ -123,7 +119,46 @@ class AuthController extends Controller
 
         return $this->respondWithToken($token);        
 
-    }     
+    }
+
+    public function register_phone(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string'
+        ]);
+
+        $user = User::where('phone', $request->phone)->first();        
+
+        if ($user) {
+            return response()->json(['error' => 'User already exists']);
+        }
+
+        $user = new User;
+        $user->phone = $request->phone;
+
+        $user->save();
+
+        return response()->json(['status' => 'success']);       
+
+    }
+
+    public function login_phone(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string'
+        ]);
+
+        $user = User::where('phone', $request->phone)->first();        
+
+        if (!$user) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+
+        $user->verification_code = null;
+        $user->save();
+
+        return response()->json(['status' => 'success']);
+    }             
 
     public function refresh()
     {

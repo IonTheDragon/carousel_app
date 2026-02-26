@@ -25,6 +25,26 @@
 }
 ```
 
+### `login_phone` - авторизация через телефон
+
+- **Запрос:** `POST /api/lk/auth/login_phone`
+- **Описание:** Отправляет запрос пользователя на авторизацию.
+
+#### Входные параметры
+- `phone` (string) - Обязательно, телефон пользователя
+
+#### Выходные параметры
+- `status` (string): success
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "success"
+}
+```
+
 
 ### `register` - регистрация
 
@@ -48,6 +68,27 @@
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
     "token_type": "bearer",
     "expires_in": 3600
+}
+```
+
+
+### `register_phone` - регистрация
+
+- **Запрос:** `POST /api/lk/auth/register_phone`
+- **Описание:** Регистрирует нового пользователя через телефон.
+
+#### Входные параметры
+- `phone` (string) - Обязательно, телефон пользователя
+
+#### Выходные параметры
+- `status` (string): success
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "success"
 }
 ```
 
@@ -104,7 +145,7 @@
 - **Описание:** Генерирует код авторизации и посылает его пользователю.
 
 #### Входные параметры
-- `token` (string) - Токен пользователя
+- `phone` (string) - Обязательно, Телефон пользователя
 
 #### Выходные параметры
 - `success` (bool): True.
@@ -128,18 +169,22 @@
 - **Описание:** Ввод и принятие кода авторизации
 
 #### Входные параметры
-- `token` (string) - Токен пользователя
+- `phone` (string) - Обязательно, Телефон пользователя
 - `code` (string) - Обязательно, код авторизации 
 
 #### Выходные параметры
-- `status` (string): Статус выполения команды
+- `access_token` (string): Токен пользователя
+- `token_type` (string): bearer
+- `expires_in` (int): когда истекает
 
 #### Пример успешного запроса
 
 **Ответ:**
 ```json
 {
-    "status": "Success"
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
+    "token_type": "bearer",
+    "expires_in": 3600
 }
 ```
 

@@ -9,6 +9,8 @@ Route::prefix('lk')->name('lk.')->middleware(['json'])->group(function () {
 		Route::post('accept_code', 'App\Http\Controllers\Lk\Auth\AuthController@acceptCode');
 	    Route::post('login', 'App\Http\Controllers\Lk\Auth\AuthController@login');
 	    Route::post('register', 'App\Http\Controllers\Lk\Auth\AuthController@register');
+	    Route::post('login_phone', 'App\Http\Controllers\Lk\Auth\AuthController@login_phone');
+	    Route::post('register_phone', 'App\Http\Controllers\Lk\Auth\AuthController@register_phone');    
 	    Route::post('logout', 'App\Http\Controllers\Lk\Auth\AuthController@logout');
 	    Route::post('refresh', 'App\Http\Controllers\Lk\Auth\AuthController@refresh');
 	    Route::post('get_vk_client_id', 'App\Http\Controllers\Lk\Auth\AuthController@get_vk_client_id');
@@ -18,11 +20,11 @@ Route::prefix('lk')->name('lk.')->middleware(['json'])->group(function () {
 	    Route::post('save_userdata', 'App\Http\Controllers\Lk\Auth\AuthController@saveUserdata');
 	});
 
-	Route::middleware(['jwt.verify', 'phone.verify'])->group(function () {
+	Route::middleware(['jwt.verify'])->group(function () {
 	    Route::post('profile', 'App\Http\Controllers\Lk\ProfileController@profile');
 	});
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['jwt.verify', 'phone.verify', 'is_admin', 'json'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['jwt.verify', 'is_admin', 'json'])->group(function () {
 	Route::post('home', 'App\Http\Controllers\Admin\AdminController@home');
 });

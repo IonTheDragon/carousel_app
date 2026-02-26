@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $user = new User([
             'name' => 'Ivan',
             'phone' => '89231280714',
+            'login' => 'IonTheDragon',
             'password' => bcrypt('ionproject')
         ]);
         $user->save();
