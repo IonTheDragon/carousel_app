@@ -148,7 +148,7 @@
 - `phone` (string) - Обязательно, Телефон пользователя
 
 #### Выходные параметры
-- `success` (bool): True.
+- `status` (string): success.
 - `message` (string): Verification code sent
 - `expires_in` (int): 900
 
@@ -157,7 +157,7 @@
 **Ответ:**
 ```json
 {
-    "success": 1,
+    "status": "success",
     "message": "Verification code sent",
     "expires_in": 900
 }
@@ -205,7 +205,7 @@
 **Ответ:**
 ```json
 {
-    "status": "Success",
+    "status": "success",
     "client_id": "1234567890"
 }
 ```
@@ -227,7 +227,7 @@
 **Ответ:**
 ```json
 {
-    "status": "Success",
+    "status": "success",
     "client_id": "1234567890"
 }
 ```
@@ -249,7 +249,7 @@
 **Ответ:**
 ```json
 {
-    "status": "Success",
+    "status": "success",
     "code_challenge": "1234567890"
 }
 ```
@@ -272,7 +272,7 @@
 **Ответ:**
 ```json
 {
-    "status": "Success"
+    "status": "success"
 }
 ```
 
@@ -295,6 +295,29 @@
 **Ответ:**
 ```json
 {
-    "status": "Success"
+    "status": "success"
+}
+```
+
+
+### `reset_password` - сброс пароля
+
+- **Запрос:** `POST /api/lk/auth/reset_password`
+- **Описание:** Сброс и сохранение нового пароля
+
+#### Входные параметры
+- `phone` (string) - Обязательно, Телефон пользователя
+- `code` (string) - Обязательно, код авторизации 
+- `password` (string) - Обязательно, минимум 8 символов, пароль пользователя
+
+#### Выходные параметры
+- `status` (string): success
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "status": "success",
 }
 ```

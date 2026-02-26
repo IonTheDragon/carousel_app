@@ -18,6 +18,7 @@ Route::prefix('lk')->name('lk.')->middleware(['json'])->group(function () {
 	    Route::post('get_vk_code_challenge', 'App\Http\Controllers\Lk\Auth\AuthController@get_vk_code_challenge');
 	    Route::post('save_phone', 'App\Http\Controllers\Lk\Auth\AuthController@savePhone');
 	    Route::post('save_userdata', 'App\Http\Controllers\Lk\Auth\AuthController@saveUserdata');
+	    Route::post('reset_password', 'App\Http\Controllers\Lk\Auth\AuthController@resetPassword');
 	});
 
 	Route::middleware(['jwt.verify'])->group(function () {

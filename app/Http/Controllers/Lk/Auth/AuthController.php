@@ -34,7 +34,7 @@ class AuthController extends Controller
         // todo send code to user
 
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => 'Verification code sent',
             'expires_in' => 900
         ]);
@@ -59,13 +59,44 @@ class AuthController extends Controller
 
         $user->verification_code = null;
         $user->verification_expires_at = null;
-        $user->phone_verified_at = now();
+        //$user->phone_verified_at = now();
         $user->save(); 
 
         $token = JWTAuth::fromUser($user);       
 
         return $this->respondWithToken($token);
-    }           
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+            'phone' => 'required|string',
+            'password' => 'required|string|min:8'
+        ]);
+
+        $user = User::where('phone', $request->phone)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        if ($user->verification_code != $request->code || $user->verification_expires_at <= now()) {
+            return response()->json(['error' => 'Wrong code']);
+        }
+
+        $user->verification_code = null;
+        $user->verification_expires_at = null;
+        //$user->phone_verified_at = now();
+        $user->password = Hash::make($request->password);
+        $user->save(); 
+
+        //$token = JWTAuth::fromUser($user);       
+
+        //return $this->respondWithToken($token);
+
+        return response()->json(['status' => 'success']);
+    }               
 
     /**
      * Get a JWT via given credentials.
@@ -155,6 +186,7 @@ class AuthController extends Controller
         }
 
         $user->verification_code = null;
+        $user->verification_expires_at = null;
         $user->save();
 
         return response()->json(['status' => 'success']);

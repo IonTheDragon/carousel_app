@@ -44,7 +44,7 @@ class User extends Authenticatable implements JWTSubject
     protected function casts(): array
     {
         return [
-            'phone_verified_at' => 'datetime',
+            //'phone_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
