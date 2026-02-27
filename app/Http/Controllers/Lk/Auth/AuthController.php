@@ -10,6 +10,8 @@ use App\Models\Common\Option;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+use Illuminate\Support\Facades\Cookie;
+
 class AuthController extends Controller
 {
 
@@ -261,6 +263,8 @@ class AuthController extends Controller
         $vk_state = Option::where('slug', 'vk_state')->first()->value;
         $client_id = Option::where('slug', 'vk_client_id')->first()->value;
 
+        $app_url = Option::where('slug', 'app_url')->first()->value;
+
         $url = 'https://id.vk.ru/oauth2/auth';
         $param = [
             'grant_type' => 'authorization_code',
@@ -284,7 +288,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['access_token'])) {
-            return view('lk.home', ['error' => 'Ошибка авторизации']);
+            return redirect()->away($app_url . '?error=Ошибка авторизации');
         }
 
         $url = 'https://id.vk.ru/oauth2/user_info';
@@ -305,7 +309,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['user'])) {
-            return view('lk.home', ['error' => 'Ошибка получения данных пользователя']);
+            return redirect()->away($app_url . '?error=Ошибка получения данных пользователя');
         }
 
         $vk_id = $json['user']['user_id'];
@@ -328,7 +332,7 @@ class AuthController extends Controller
 
                 $token = JWTAuth::fromUser($user);
 
-                return view('lk.home', ['status' => 'need_phone', 'token' => $token]);
+                return redirect()->away($app_url . '?need_phone=1')->withCookie('access_token', $token, 60);
             }
 
             $exist_user = User::where('phone', $json['user']['phone'])->first();
@@ -353,12 +357,14 @@ class AuthController extends Controller
             $token = JWTAuth::fromUser($user);           
         }
 
-        return view('lk.home', ['status' => 'success', 'token' => $token]);                             
+        return redirect()->away($app_url)->withCookie('access_token', $token, 60);                            
     }
 
     public function yandexAuth(Request $request) {
         $client_id = Option::where('slug', 'ya_client_id')->first()->value;
         $client_secret = Option::where('slug', 'ya_client_secret')->first()->value;
+
+        $app_url = Option::where('slug', 'app_url')->first()->value;
 
         $url = 'https://oauth.yandex.ru/token';
         $param = [
@@ -384,7 +390,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['access_token'])) {
-            return view('lk.home', ['error' => 'Ошибка авторизации']);
+            return redirect()->away($app_url . '?error=Ошибка авторизации');
         }
 
         $url = 'https://login.yandex.ru/info';
@@ -404,7 +410,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['id'])) {
-            return view('lk.home', ['error' => 'Ошибка получения данных пользователя']);
+            return redirect()->away($app_url . '?error=Ошибка получения данных пользователя');
         }
 
         $ya_id = $json['id'];
@@ -427,7 +433,7 @@ class AuthController extends Controller
 
                 $token = JWTAuth::fromUser($user);
 
-                return view('lk.home', ['status' => 'need_phone', 'token' => $token]);
+                return redirect()->away($app_url . '?need_phone=1')->withCookie('access_token', $token, 60);
             }
 
             $exist_user = User::where('phone', $json['default_phone']['number'])->first();
@@ -452,7 +458,7 @@ class AuthController extends Controller
             $token = JWTAuth::fromUser($user);           
         }
 
-        return view('lk.home', ['status' => 'success', 'token' => $token]);                             
+        return redirect()->away($app_url)->withCookie('access_token', $token, 60);                             
     }    
 
     public function savePhone(Request $request)

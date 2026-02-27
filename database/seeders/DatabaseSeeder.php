@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $role_vs_user->save(); 
 
         $data = [
+            ['title'=>'URL приложения', 'slug'=>'app_url', 'value' => ''],
             ['title'=>'VK ID приложения', 'slug'=>'vk_client_id', 'value' => ''],
             ['title'=>'VK Строка состояния', 'slug'=>'vk_state', 'value' => $this->generateRandomString(32)],
             ['title'=>'Yandex ID приложения', 'slug'=>'ya_client_id', 'value' => ''],
