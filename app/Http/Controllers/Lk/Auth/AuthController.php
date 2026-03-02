@@ -252,7 +252,7 @@ class AuthController extends Controller
         $vk_state = Option::where('slug', 'vk_state')->first()->value;
         $client_id = Option::where('slug', 'vk_client_id')->first()->value;
 
-        $app_url = Option::where('slug', 'app_url')->first()->value;
+        $vk_redirect_url = Option::where('slug', 'vk_redirect_url')->first()->value;
 
         $url = 'https://id.vk.ru/oauth2/auth';
         $param = [
@@ -261,7 +261,7 @@ class AuthController extends Controller
             'code_verifier' => $request->input('code_verifier'),
             'client_id' => $client_id,
             'device_id' => $request->input('device_id'),
-            'redirect_uri' => $app_url,
+            'redirect_uri' => $vk_redirect_url,
             'state' => $vk_state
         ];
 

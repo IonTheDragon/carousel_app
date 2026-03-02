@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
 
         $data = [
             ['title'=>'URL приложения', 'slug'=>'app_url', 'value' => ''],
+            ['title'=>'URL ВК редиректа после авторизации', 'slug'=>'vk_redirect_url', 'value' => ''],
             ['title'=>'VK ID приложения', 'slug'=>'vk_client_id', 'value' => ''],
             ['title'=>'VK Строка состояния', 'slug'=>'vk_state', 'value' => $this->generateRandomString(32)],
             ['title'=>'Yandex ID приложения', 'slug'=>'ya_client_id', 'value' => ''],
