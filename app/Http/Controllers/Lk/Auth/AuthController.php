@@ -273,7 +273,7 @@ class AuthController extends Controller
             'client_id' => $client_id,
             'device_id' => $request->input('device_id'),
             'redirect_uri' => route('lk.auth.vk_auth'),
-            'state' => $request->input('device_id')
+            'state' => $vk_state
         ];
 
         $curl = curl_init();
