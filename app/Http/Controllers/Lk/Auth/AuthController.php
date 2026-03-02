@@ -360,7 +360,7 @@ class AuthController extends Controller
         return redirect()->away($app_url)->withCookie('access_token', $token, 60);                            
     }
 
-    public function yandexAuth(Request $request) {
+    public function yaAuth(Request $request) {
         $client_id = Option::where('slug', 'ya_client_id')->first()->value;
         $client_secret = Option::where('slug', 'ya_client_secret')->first()->value;
 
@@ -404,6 +404,7 @@ class AuthController extends Controller
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header_auth);
         curl_setopt($curl, CURLOPT_POST, false);
 
         $out = curl_exec($curl);
@@ -458,7 +459,7 @@ class AuthController extends Controller
             $token = JWTAuth::fromUser($user);           
         }
 
-        return redirect()->away($app_url)->withCookie('access_token', $token, 60);                             
+        return redirect()->away($app_url)->withCookie(cookie('access_token', $token, 60, '/', null, false, false));                             
     }    
 
     public function savePhone(Request $request)
