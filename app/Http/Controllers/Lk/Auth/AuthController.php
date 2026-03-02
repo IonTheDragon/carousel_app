@@ -242,17 +242,6 @@ class AuthController extends Controller
         return response()->json(['status' => 'Success', 'client_id' => $client_id]);
     }
 
-    public function get_vk_code_challenge(Request $request) {
-        $vk_state = Option::where('slug', 'vk_state')->first()->value;
-
-        $sha256Hash = hash('sha256', $vk_state, true);
-        $base64Encoded = base64_encode($sha256Hash);
-
-        $code_challenge = str_replace(['+', '/', '='], ['-', '_', ''], $base64Encoded);
-
-        return response()->json(['status' => 'Success', 'code_challenge' => $code_challenge]);
-    }
-
     public function get_ya_client_id(Request $request) {
         $client_id = Option::where('slug', 'ya_client_id')->first()->value;
 
@@ -269,10 +258,10 @@ class AuthController extends Controller
         $param = [
             'grant_type' => 'authorization_code',
             'code' => $request->input('code'),
-            'code_verifier' => $vk_state,
+            'code_verifier' => $request->input('code_verifier'),
             'client_id' => $client_id,
             'device_id' => $request->input('device_id'),
-            'redirect_uri' => route('lk.auth.vk_auth'),
+            'redirect_uri' => $app_url,
             'state' => $vk_state
         ];
 
@@ -288,7 +277,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['access_token'])) {
-            return redirect()->away($app_url . '?error=Ошибка авторизации');
+            return response()->json(['error' => 'Auth error']);
         }
 
         $url = 'https://id.vk.ru/oauth2/user_info';
@@ -309,7 +298,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['user'])) {
-            return redirect()->away($app_url . '?error=Ошибка получения данных пользователя');
+            return response()->json(['error' => 'User error']);
         }
 
         $vk_id = $json['user']['user_id'];
@@ -332,7 +321,12 @@ class AuthController extends Controller
 
                 $token = JWTAuth::fromUser($user);
 
-                return redirect()->away($app_url . '?need_phone=1')->withCookie('access_token', $token, 60);
+                return response()->json([
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
+                    'need_phone' => true
+                ]);                
             }
 
             $exist_user = User::where('phone', $json['user']['phone'])->first();
@@ -357,14 +351,12 @@ class AuthController extends Controller
             $token = JWTAuth::fromUser($user);           
         }
 
-        return redirect()->away($app_url)->withCookie('access_token', $token, 60);                            
+        return $this->respondWithToken($token);                            
     }
 
     public function yaAuth(Request $request) {
         $client_id = Option::where('slug', 'ya_client_id')->first()->value;
         $client_secret = Option::where('slug', 'ya_client_secret')->first()->value;
-
-        $app_url = Option::where('slug', 'app_url')->first()->value;
 
         $url = 'https://oauth.yandex.ru/token';
         $param = [
@@ -390,7 +382,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['access_token'])) {
-            return redirect()->away($app_url . '?error=Ошибка авторизации');
+            return response()->json(['error' => 'Auth error']);
         }
 
         $url = 'https://login.yandex.ru/info';
@@ -411,7 +403,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['id'])) {
-            return redirect()->away($app_url . '?error=Ошибка получения данных пользователя');
+            return response()->json(['error' => 'User error']);
         }
 
         $ya_id = $json['id'];
@@ -434,7 +426,12 @@ class AuthController extends Controller
 
                 $token = JWTAuth::fromUser($user);
 
-                return redirect()->away($app_url . '?need_phone=1')->withCookie('access_token', $token, 60);
+                return response()->json([
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
+                    'need_phone' => true
+                ]); 
             }
 
             $exist_user = User::where('phone', $json['default_phone']['number'])->first();
@@ -459,7 +456,7 @@ class AuthController extends Controller
             $token = JWTAuth::fromUser($user);           
         }
 
-        return redirect()->away($app_url)->withCookie(cookie('access_token', $token, 60, '/', null, false, false));                             
+        return $this->respondWithToken($token);                             
     }    
 
     public function savePhone(Request $request)

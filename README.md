@@ -233,28 +233,6 @@
 ```
 
 
-### `get_vk_code_challenge` - получить code_challenge VK
-
-- **Запрос:** `POST /api/lk/auth/get_vk_code_challenge`
-- **Описание:** Получаем code_challenge VK
-
-#### Входные параметры
-
-#### Выходные параметры
-- `status` (string): Статус выполения команды
-- `code_challenge` (string): code_challenge VK
-
-#### Пример успешного запроса
-
-**Ответ:**
-```json
-{
-    "status": "success",
-    "code_challenge": "1234567890"
-}
-```
-
-
 ### `save_phone` - Сохранить номер телефона
 
 - **Запрос:** `POST /api/lk/auth/save_phone`
@@ -319,5 +297,57 @@
 ```json
 {
     "status": "success",
+}
+```
+
+
+### `vk_auth` - авторизация ВК
+
+- **Запрос:** `POST /api/lk/auth/vk_auth`
+- **Описание:** Ввод и принятие кода авторизации ВК
+
+#### Входные параметры
+- `code` (string) - Обязательно, код авторизации 
+- `code_verifier` (string) - Обязательно, случайно сгенерированная строка, новая на каждый запрос авторизации. Может состоять из следующих символов: a-z, A-Z, 0-9, \_, -. Длина от 43 до 128 символов;
+- `device_id` (string) - Обязательно, Уникальный идентификатор устройства клиента
+
+#### Выходные параметры
+- `access_token` (string): Токен пользователя
+- `token_type` (string): bearer
+- `expires_in` (int): когда истекает
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
+    "token_type": "bearer",
+    "expires_in": 3600
+}
+```
+
+
+### `ya_auth` - авторизация Яндекс
+
+- **Запрос:** `POST /api/lk/auth/ya_auth`
+- **Описание:** Ввод и принятие кода авторизации Яндекс
+
+#### Входные параметры
+- `code` (string) - Обязательно, код авторизации 
+
+#### Выходные параметры
+- `access_token` (string): Токен пользователя
+- `token_type` (string): bearer
+- `expires_in` (int): когда истекает
+
+#### Пример успешного запроса
+
+**Ответ:**
+```json
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xrL2F1dGgvbG9naW4iLCJpYXQiOjE3NzE1NzAwMjksImV4cCI6MTc3MTU3MzYyOSwibmJmIjoxNzcxNTcwMDI5LCJqdGkiOiJQYlpyQnhRTUVRbldEMTVOIiwic3ViIjoiMSIsInBydiI6IjY3ZTE1Y2FhY2ZjYTY3YTE5MGMzMzg0Y2VkMzQxZWI4MTE4NzM1M2YifQ.cuqEsr4m6b8urBO_12jFsGeUoP79EBmf1LnH9rJFRUo",
+    "token_type": "bearer",
+    "expires_in": 3600
 }
 ```
