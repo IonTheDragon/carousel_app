@@ -9,8 +9,7 @@ use App\Models\Lk\User;
 use App\Models\Common\Option;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
