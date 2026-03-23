@@ -23,7 +23,7 @@ class AuthController extends Controller
         $user = User::where('phone', $request->phone)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'Пользователь не найден'], 404);
         }                
         
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -51,11 +51,11 @@ class AuthController extends Controller
         $user = User::where('phone', $request->phone)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'Пользователь не найден'], 404);
         }
 
         if ($user->verification_code != $request->code || $user->verification_expires_at <= now()) {
-            return response()->json(['error' => 'Wrong code']);
+            return response()->json(['error' => 'Неправильный код']);
         }
 
         $user->verification_code = null;
@@ -79,11 +79,11 @@ class AuthController extends Controller
         $user = User::where('phone', $request->phone)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'Пользователь не найден'], 404);
         }
 
         if ($user->verification_code != $request->code || $user->verification_expires_at <= now()) {
-            return response()->json(['error' => 'Wrong code']);
+            return response()->json(['error' => 'Неправильный код']);
         }
 
         $user->verification_code = null;
@@ -114,13 +114,13 @@ class AuthController extends Controller
         $user = User::where('login', $request->login)->first();        
 
         if (!$user) {
-            return response()->json(['error' => 'Not found'], 404);
+            return response()->json(['error' => 'Пользователь не найден'], 404);
         }
 
         $credentials = request(['login', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Ошибка авторизации'], 401);
         }      
 
         return $this->respondWithToken($token);
@@ -136,7 +136,7 @@ class AuthController extends Controller
         $user = User::where('login', $request->login)->first();        
 
         if ($user) {
-            return response()->json(['error' => 'User already exists']);
+            return response()->json(['error' => 'Пользователь с таким логином уже существует']);
         }
 
         $user = new User;
@@ -162,7 +162,7 @@ class AuthController extends Controller
         $user = User::where('phone', $request->phone)->first();        
 
         if ($user) {
-            return response()->json(['error' => 'User already exists']);
+            return response()->json(['error' => 'Пользователь с таким номером телефона уже существует']);
         }
 
         $user = new User;
@@ -183,7 +183,7 @@ class AuthController extends Controller
         $user = User::where('phone', $request->phone)->first();        
 
         if (!$user) {
-            return response()->json(['error' => 'Not found'], 404);
+            return response()->json(['error' => 'Пользователь не найден'], 404);
         }
 
         $user->verification_code = null;
@@ -199,11 +199,11 @@ class AuthController extends Controller
             $token = JWTAuth::parseToken();
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return response()->json(['error' => 'Token is Invalid'], 401);
+                return response()->json(['error' => 'Токен недействителен'], 401);
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return response()->json(['error' => 'Token is Expired'], 401);
+                return response()->json(['error' => 'Срок действия токена истек'], 401);
             } else {
-                return response()->json(['error' => 'Authorization Token not found'], 401);
+                return response()->json(['error' => 'Токен не найден'], 401);
             }
         }            
 
@@ -224,11 +224,11 @@ class AuthController extends Controller
             auth()->logout();
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return response()->json(['error' => 'Token is Invalid'], 401);
+                return response()->json(['error' => 'Токен недействителен'], 401);
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return response()->json(['error' => 'Token is Expired'], 401);
+                return response()->json(['error' => 'Срок действия токена истек'], 401);
             } else {
-                return response()->json(['error' => 'Authorization Token not found'], 401);
+                return response()->json(['error' => 'Токен не найден'], 401);
             }
         }
 
@@ -276,7 +276,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['access_token'])) {
-            return response()->json(['error' => 'Auth error']);
+            return response()->json(['error' => 'Ошибка авторизации']);
         }
 
         $url = 'https://id.vk.ru/oauth2/user_info';
@@ -297,7 +297,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['user'])) {
-            return response()->json(['error' => 'User error']);
+            return response()->json(['error' => 'Ошибка пользователя']);
         }
 
         $vk_id = $json['user']['user_id'];
@@ -381,7 +381,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['access_token'])) {
-            return response()->json(['error' => 'Auth error']);
+            return response()->json(['error' => 'Ошибка авторизации']);
         }
 
         $url = 'https://login.yandex.ru/info';
@@ -402,7 +402,7 @@ class AuthController extends Controller
         $json = json_decode($out, true);
 
         if (empty($json) || empty($json['id'])) {
-            return response()->json(['error' => 'User error']);
+            return response()->json(['error' => 'Ошибка пользователя']);
         }
 
         $ya_id = $json['id'];
@@ -467,7 +467,7 @@ class AuthController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Вы не авторизованы'], 401);
         }
 
         $user->phone = $request->phone;
@@ -486,7 +486,7 @@ class AuthController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Вы не авторизованы'], 401);
         }
 
         $user->email = $request->email;
